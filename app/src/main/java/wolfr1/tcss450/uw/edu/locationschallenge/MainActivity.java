@@ -32,6 +32,8 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback,
         GoogleMap.OnMapClickListener,
         GoogleMap.OnCameraMoveStartedListener {
@@ -58,6 +60,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private FloatingActionButton fab;
     private boolean mIsFollowing;
     private Marker mCurrentMarker;
+
+    // challange
+    ArrayList<MarkerOptions> mMarkerArrayList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -289,10 +294,22 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void onMapClick(LatLng latLng) {
-        Log.d("LAT/LONG", latLng.toString());
-        Marker marker = mMap.addMarker(new MarkerOptions() .position(latLng)
-                .title("New Marker"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 18.0f));
+        int index = 0;
+        if(!mMarkerArrayList.isEmpty()) {
+            for(index = 0; index < mMarkerArrayList.size(); index++){
+                Marker marker = mMap.addMarker(mMarkerArrayList.get(index));
+            }
+        }
+
+
+        // then add the current marker
+        MarkerOptions mk = new MarkerOptions().position(latLng)
+                .title("New Marker " + index);
+        Marker marker = mMap.addMarker(mk);
+        marker.setTag(index);
+        mMarkerArrayList.add(mk);
+
+        //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15.0f));
     }
 
     @Override
