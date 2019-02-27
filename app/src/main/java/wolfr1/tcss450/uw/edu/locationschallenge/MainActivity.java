@@ -331,7 +331,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         // then add the current marker
         MarkerOptions mk = new MarkerOptions().position(latLng)
                 .title("New Marker " + index);
-        if(mColorIndex >=6) {
+        if(mColorIndex >=5) {
             mColorIndex = 0;
         } else {
             mColorIndex++;
