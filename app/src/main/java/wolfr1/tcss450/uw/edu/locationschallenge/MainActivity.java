@@ -56,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mCurrentLocation = new Location("");
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -70,23 +71,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                             .setAction("Action", null).show();
 
                 } else {
-                    //Do nothing
-//                    Intent i = new Intent(MyLocationsActivity.this, MapsActivity.class);
-//                    //pass the current location on to the MapActivity when it is loaded
-//                    i.putExtra("LOCATION", mCurrentLocation);
-//                    startActivity(i);
+
                 }
             }
         });
 
-        setContentView(R.layout.activity_main);
-
-        mCurrentLocation = (Location) getIntent().getParcelableExtra("LOCATION");
-
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
@@ -101,7 +90,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     MY_PERMISSIONS_LOCATIONS);
         } else {
             //The user has already allowed the use of Locations. Get the current location.
+            Log.e("Location 0 ============= ", "" + mCurrentLocation);
             requestLocation();
+            Log.e("Location 1 ============= ", "" + mCurrentLocation);
+
         }
 
         mLocationCallback = new LocationCallback() {
@@ -120,11 +112,28 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             };
         };
 
+//        Log.e("Location 1 ============= ", "" + mCurrentLocation);
         createLocationRequest();
+//        Log.e("Location 2 ============= ", "" + mCurrentLocation);
+
+
+        setContentView(R.layout.activity_maps);
+
+//        mCurrentLocation = (Location) getIntent().getParcelableExtra("LOCATION");
+
+
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+
     }
 
+
     private void setLocation(final Location location) {
+//        Log.e("Location 0.0 ============= ", "" + mCurrentLocation);
         mCurrentLocation = location;
+//        Log.e("Location 0.1 ============= ", "" + mCurrentLocation);
     }
 
     @Override
@@ -192,7 +201,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     }
 
     private void requestLocation() {
-
+        Log.e("Location Requested !!!!!!!!!!!!!!!!!!!!!!!!!!!!", "");
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -201,11 +210,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             Log.d("REQUEST LOCATION", "User did NOT allow permission to request location!");
 
         } else {
-
+//            Log.e("Request Location 1 ============= ", "");
             mFusedLocationClient.getLastLocation()
                     .addOnSuccessListener(this, new OnSuccessListener<Location>() {
                         @Override
                         public void onSuccess(Location location) {
+                            Log.e("Request Location Success ============= ", "");
                             // Got last known location. In some rare situations this can be null.
                             if (location != null) {
                                 setLocation(location);
