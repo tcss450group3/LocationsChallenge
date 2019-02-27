@@ -25,6 +25,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -33,7 +35,8 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback,
-        GoogleMap.OnMapClickListener {
+        GoogleMap.OnMapClickListener,
+        GoogleMap.OnCameraMoveStartedListener {
 
     private static final String TAG = "MyLocationsActivity";
     /**
@@ -54,6 +57,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private FusedLocationProviderClient mFusedLocationClient;
     private LocationCallback mLocationCallback;
     private GoogleMap mMap;
+    private FloatingActionButton fab;
+    private boolean mIsFollowing;
+    private Marker mCurrentMarker;
 
     // challange
     ArrayList<MarkerOptions> mMarkerArrayList = new ArrayList<>();
@@ -66,7 +72,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = findViewById(R.id.fab);
+
+        mIsFollowing = true;
+
+        fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -76,10 +85,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                             .setAction("Action", null).show();
 
                 } else {
-
+                    // SNAP TO MARKER LOCATION
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng (mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude()), 18.0f));
+                    fab.setEnabled(false);
+                    mIsFollowing = true;
                 }
             }
         });
+
+
 
 
         mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
@@ -113,6 +127,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     // ...
                     setLocation(location);
                     Log.d("LOCATION UPDATE!", location.toString());
+                    LatLng currentLatLong = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
+                    mCurrentMarker.setPosition(currentLatLong);
+                    if (mIsFollowing){
+                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLatLong, 18.0f));
+                    }
                 }
             };
         };
@@ -277,7 +296,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         // Add a marker in the current device location and move the camera
         LatLng current = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
-        mMap.addMarker(new MarkerOptions().position(current).title("Current Location"));
+        mCurrentMarker = mMap.addMarker(new MarkerOptions().position(current).title("Current Location")
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_maps_walking_man)));
         //Zoom levels are from 2.0f (zoomed out) to 21.f (zoomed in)
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(current, 15.0f));
         mMap.setOnMapClickListener(this);
@@ -303,4 +323,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15.0f));
     }
 
+    @Override
+    public void onCameraMoveStarted(int i) {
+        fab.setEnabled(true);
+        mIsFollowing = false;
+    }
 }
