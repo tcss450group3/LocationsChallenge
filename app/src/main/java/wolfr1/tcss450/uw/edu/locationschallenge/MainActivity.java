@@ -296,8 +296,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         // Add a marker in the current device location and move the camera
         LatLng current = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
-        mCurrentMarker = mMap.addMarker(new MarkerOptions().position(current).title("Current Location")
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_maps_walking_man)));
+        mCurrentMarker = mMap.addMarker(new MarkerOptions().position(current).title("Current Location"));
+
         //Zoom levels are from 2.0f (zoomed out) to 21.f (zoomed in)
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(current, 15.0f));
         mMap.setOnMapClickListener(this);
