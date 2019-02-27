@@ -141,7 +141,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 //        Log.e("Location 2 ============= ", "" + mCurrentLocation);
 
 
-        setContentView(R.layout.activity_maps);
+//        setContentView(R.layout.activity_maps);
 
 //        mCurrentLocation = (Location) getIntent().getParcelableExtra("LOCATION");
 
