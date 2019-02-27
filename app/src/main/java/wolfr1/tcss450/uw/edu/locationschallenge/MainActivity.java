@@ -3,6 +3,7 @@ package wolfr1.tcss450.uw.edu.locationschallenge;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -34,6 +35,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.ArrayList;
 
+
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback,
         GoogleMap.OnMapClickListener,
         GoogleMap.OnCameraMoveStartedListener {
@@ -63,11 +65,24 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     // challange
     ArrayList<MarkerOptions> mMarkerArrayList = new ArrayList<>();
+   // ArrayList<Marker> m
+
+    //Color[] colors = new Color[7];
+
+    float[] colors = {BitmapDescriptorFactory.HUE_BLUE,BitmapDescriptorFactory.HUE_GREEN,
+            BitmapDescriptorFactory.HUE_AZURE,BitmapDescriptorFactory.HUE_MAGENTA,
+            BitmapDescriptorFactory.HUE_ROSE,BitmapDescriptorFactory.HUE_YELLOW};
+
+    int mColorIndex = 0;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
         mCurrentLocation = new Location("");
+
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -316,6 +331,12 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         // then add the current marker
         MarkerOptions mk = new MarkerOptions().position(latLng)
                 .title("New Marker " + index);
+        if(mColorIndex >=5) {
+            mColorIndex = 0;
+        } else {
+            mColorIndex++;
+        }
+        mk.icon(BitmapDescriptorFactory.defaultMarker(colors[mColorIndex]));
         Marker marker = mMap.addMarker(mk);
         marker.setTag(index);
         mMarkerArrayList.add(mk);
@@ -328,4 +349,5 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         fab.setEnabled(true);
         mIsFollowing = false;
     }
+
 }
