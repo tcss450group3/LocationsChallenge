@@ -151,6 +151,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             };
         };
 
+        mMap.setOnCameraMoveStartedListener(this);
+
+
 //        Log.e("Location 1 ============= ", "" + mCurrentLocation);
         createLocationRequest();
 //        Log.e("Location 2 ============= ", "" + mCurrentLocation);
@@ -346,6 +349,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     @Override
     public void onCameraMoveStarted(int i) {
+        Log.e(TAG, "onCameraMoveStarted: " );
         fab.setEnabled(true);
         mIsFollowing = false;
     }
